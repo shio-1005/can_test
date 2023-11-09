@@ -73,18 +73,16 @@ void main(void)
     
     //Write(_CANINTF, 0b00000000);
     
-    /* 送信　
-        Write(_TXB0DLC , 0b00001000);                                               //データサイズ8byte
-        Load_TX_ID(_F_TXB0SIDH, SIDH_1, SIDL_DATA2, EID8_WRITE, EID0_DATA2);        //HKデータ送信       
-        Load_TX_Data(_F_TXB0D0, 8, &HK_1);                                          //データ送信 
-        RTS0(2);
-      */
-    
-    
+    /*マスター
+    //送信　
+    Write(_TXB0DLC , 0b00001000);                                               //データサイズ8byte
+    Load_TX_ID(_F_TXB0SIDH, SIDH_1, SIDL_DATA2, EID8_WRITE, EID0_DATA2);        //HKデータ送信       
+    Load_TX_Data(_F_TXB0D0, 8, &HK_1);                                          //データ送信 
+    RTS0(2);
+
     while(1){
-        
-        
-        /* 受信　*/
+
+        //受信　
         rx_int = Read(_CANINTF);                                                            //受信バッファ確認
         if((rx_int & _Flagbit0) == 0b00000001)
         {   
@@ -92,23 +90,36 @@ void main(void)
             data = Read(_RXB0D0);
             __delay_ms(1000);
             
-            /* 送信　*/
-            Write(_TXB0DLC , 0b00000001);                                               //データサイズ8byte
-            Load_TX_ID(_F_TXB0SIDH, SIDH_1, SIDL_DATA2, EID8_WRITE, EID0_DATA2);        //HKデータ送信       
-            Load_TX_Data(_F_TXB0D0, 1, &data);                                          //データ送信 
-            RTS0(2);
-        
-            /* 送信　*/
+            // 送信　
             Write(_TXB0DLC , 0b00001000);                                               //データサイズ8byte
             Load_TX_ID(_F_TXB0SIDH, SIDH_1, SIDL_DATA2, EID8_WRITE, EID0_DATA2);        //HKデータ送信       
             Load_TX_Data(_F_TXB0D0, 8, &HK_1);                                          //データ送信 
             RTS0(2);
         }
-        
-        
-        
     }
+    */
     
+    /*スレーブ
+    while(1){
+        
+        
+        //受信　
+        rx_int = Read(_CANINTF);                                                            //受信バッファ確認
+        if((rx_int & _Flagbit0) == 0b00000001)
+        {   
+            Write(_CANINTF, 0b00000000);                                                    //受信フラグクリア
+            data = Read(_RXB0D0);
+            __delay_ms(1000);
+            
+            // 送信　
+            Write(_TXB0DLC , 0b00000001);                                               //データサイズ8byte
+            Load_TX_ID(_F_TXB0SIDH, SIDH_1, SIDL_DATA2, EID8_WRITE, EID0_DATA2);        //HKデータ送信       
+            Load_TX_Data(_F_TXB0D0, 1, &data);                                          //データ送信 
+            RTS0(2);
+
+        }
+    }
+    */
     
 }
 
